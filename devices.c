@@ -13,14 +13,17 @@ struct Memory{
 
 
 int main(int argc,char *argv[]) {
-    key_t	ShmKEY;
+
 	int	ShmID;
 	struct Memory *ShmPTR;
 	int runtime;
-		
-	ShmKEY = 2011;
 
-	ShmID = shmget(ShmKEY,sizeof(struct Memory),IPC_CREAT| 0666);
+    if(argc!=3){
+        printf("\nInsufficient arguments give ./devices -m <shm_mem_id>");
+		exit(1);
+    }
+		
+	ShmID=atoi(argv[2]);
 	if(ShmID<0){
 		printf("\n shmget() Failed");
 		exit(1);

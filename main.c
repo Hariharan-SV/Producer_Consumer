@@ -16,7 +16,7 @@ struct Memory{
 int main(int argc,char *argv[]) {
 
 	if(argc!=7){
-		printf("\nInsufficient arguments give ./a.out -t <total_run_time> -d <no_of_printers> -l <length_of_queue>");
+		printf("\nInsufficient arguments give ./main -t <total_run_time> -d <no_of_printers> -l <length_of_queue>");
 		exit(1);
 	}
 
@@ -27,7 +27,7 @@ int main(int argc,char *argv[]) {
 	struct Memory *ShmPTR;
 	int runtime;
 		
-	ShmKEY = 2011;
+	ShmKEY = rand()%1000+1000;
 
 	ShmID = shmget(ShmKEY,sizeof(struct Memory),IPC_CREAT| 0666);
 	if(ShmID<0){
