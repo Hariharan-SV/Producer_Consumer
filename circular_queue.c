@@ -1,23 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "photocopy.h"
 
 int MAX;
 int front = -1;
 int rear = -1;
 
-struct Photocopy{
-	char filename[20];
-	int filesize;
-	int copies;
-};
-
 struct Photocopy *cqueue_arr;
 
-void insert(int item)
+struct Photocopy* initialize(int x){
+	MAX=x;
+	cqueue_arr = (struct Photocopy *)malloc(MAX*sizeof(struct Photocopy ));
+	return cqueue_arr;
+}
+
+int insert(int item)
 {
 	if((front == 0 && rear == MAX-1) || (front == rear+1)){
-		printf("Queue Overflow \n");
-		return;
+		return 1;
 	}
 	if(front == -1){
 		front = 0;
@@ -32,14 +32,15 @@ void insert(int item)
 	}
 	cqueue_arr[rear].copies = item ;
 	printf("%d %d\n",cqueue_arr[rear].copies,rear);
+	return 0;
 }
 
-void deletion()
+int deletion()
 {
 	if(front == -1)
 	{
 		printf("Queue Underflown");
-		return ;
+		return 1;
 	}
 	printf("Element deleted from queue is : %d\n",cqueue_arr[front].copies);
 	if(front == rear)
@@ -54,6 +55,7 @@ void deletion()
 		else
 			front = front+1;
 	}
+	return 0;
 }
 
 void display()
@@ -87,37 +89,3 @@ void display()
 	printf("\n");
 }
 
-int main()
-{
-	int choice,item;
-	MAX=5;
-	cqueue_arr = (struct Photocopy *)malloc(MAX*sizeof(struct Photocopy ));
-	do
-	{
-		printf("1.Insert\n");
-		printf("2.Delete\n");
-		printf("3.Display\n");
-		printf("4.Quit\n");
-		printf("Enter your choice : ");
-		scanf("%d",&choice);
-		switch(choice)
-		{
-			case 1 :
-				printf("Input the element for insertion in queue : ");
-				scanf("%d", &item);
-				insert(item);
-				break;
-			case 2 :
-				deletion();
-				break;
-			case 3:
-				display();
-				break;
-			case 4:
-				break;
-			default:
-				printf("Wrong choice\n");
-		}
-	}while(choice!=4);
-	return 0;
-}
