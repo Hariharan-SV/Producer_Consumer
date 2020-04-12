@@ -1,15 +1,15 @@
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
+#include <time.h>
+#include <pthread.h>
+#include <sys/shm.h>
+#include <sys/ipc.h>
+#include <sys/types.h>
 #include "circular_queue.c"
 
-struct Memory{
-	int no_of_devices;
-	int queue_size;
-	struct Circular_Queue CQ;
-};
-
 int main(int argc,char* argv[]){
-    if(argc!=3){
+    if(argc!=11){
         printf("\nIncorrect args\nCorrect usage is %s -s <store's_shmid> -q <queue's_shmid> -n <no_of_copies> -p <no_of_pages> -f <file_name>",argv[0]);
         return 1;
     }
