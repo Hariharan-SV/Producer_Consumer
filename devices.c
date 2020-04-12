@@ -2,40 +2,39 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <time.h>
+#include <pthread.h>
 #include <sys/shm.h>
 #include <sys/ipc.h>
 #include <sys/types.h>
-
-struct Memory{
-	int no_of_devices;
-	int queue_size;
-};
-
+#include "circular_queue.c"
 
 int main(int argc,char *argv[]) {
 
-	int	ShmID;
-	struct Memory *ShmPTR;
-	int runtime;
-
-    if(argc!=3){
-        printf("\nInsufficient arguments give ./devices -m <shm_mem_id>");
-		exit(1);
+	if(argc!=5){
+        printf("\nIncorrect args\nCorrect usage is %s -s <store's_shmid> -q <queue's_shmid>",argv[0]);
+        return 1;
     }
-		
-	ShmID=atoi(argv[2]);
-	if(ShmID<0){
-		printf("\n shmget() Failed");
-		exit(1);
-	}
 
-	ShmPTR = (struct Memory *)shmat(ShmID,NULL,0);
+	int	ShmID,ShmID2;
+	struct Circular_Queue *ShmPTR;
+
+	ShmID = atoi(argv[2]);
+	ShmID2 = atoi(argv[4]);
+
+	ShmPTR = (struct Circular_Queue *)shmat(ShmID,NULL,0);
 	if((int)ShmPTR == -1){
-		printf("\n shmat() Failed");
+		printf("\n shmat() Failed\n");
 		exit(1);
 	}
 
-    printf("no_of_devices:%d\nqueue_size:%d\n",ShmPTR->no_of_devices,ShmPTR->queue_size);
+	ShmPTR->cqueue_arr=(struct Photocopy *)shmat(ShmID2,NULL,0);
+	if(ShmPTR->cqueue_arr == (struct Photocopy *)(-1)){
+		printf("\n shmat() for ShmID2 Failed\n");
+		exit(1);
+	}
+
+	display(ShmPTR);
+
     shmdt((void*)ShmPTR);
 
 }

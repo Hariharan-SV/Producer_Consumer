@@ -5,13 +5,7 @@
 #include <sys/shm.h>
 #include <sys/ipc.h>
 #include <sys/types.h>
-
-
-struct Memory{
-	int no_of_devices;
-	int queue_size;
-};
-
+#include "circular_queue.c"
 
 int main(int argc,char *argv[]) {
 
@@ -20,31 +14,44 @@ int main(int argc,char *argv[]) {
 		exit(1);
 	}
 
-	time_t start, end;
 	double elapsed;
-	key_t	ShmKEY;
-	int	ShmID;
-	struct Memory *ShmPTR;
 	int runtime;
-		
-	ShmKEY = rand()%1000+1000;
-
-	ShmID = shmget(ShmKEY,sizeof(struct Memory),IPC_CREAT| 0666);
+	time_t start, end;
+	key_t	ShmKEY,ShmKEY2;
+	int	ShmID,ShmID2;
+	struct Circular_Queue *ShmPTR;
+			
+	ShmKEY = rand()%1000+1500;
+	ShmKEY2 = rand()%1000+ 2000;
+    
+	ShmID = shmget(ShmKEY,sizeof(struct Circular_Queue),IPC_CREAT| 0777);
 	if(ShmID<0){
-		printf("\n shmget() Failed");
+		printf("\n shmget() Failed\n");
 		exit(1);
 	}
 
-	ShmPTR = (struct Memory *)shmat(ShmID,NULL,0);
+	ShmPTR = (struct Circular_Queue *)shmat(ShmID,NULL,0);
 	if((int)ShmPTR == -1){
-		printf("\n shmat() Failed");
+		printf("\n shmat() Failed\n");
 		exit(1);
 	}
 
-	printf("Photocopy Centre's SHMID is %d \n",ShmID);
 	ShmPTR->no_of_devices = atoi(argv[4]);
-	ShmPTR->queue_size = atoi(argv[6]);
-	printf("no_of_devices:%d\nqueue_size:%d\n",ShmPTR->no_of_devices,ShmPTR->queue_size);
+	ShmPTR->MAX = atoi(argv[6]);
+	ShmPTR->front = -1;
+	ShmPTR->rear = -1;
+	ShmID2=shmget(ShmKEY2,(ShmPTR->MAX*sizeof(struct Photocopy)),0666|IPC_CREAT);
+	if(ShmID2<0){
+		printf("\n shmget() for ShmKEY2 Failed\n");
+		exit(1);
+	}
+	ShmPTR->cqueue_arr=(struct Photocopy *)shmat(ShmID2,NULL,0);
+	if(ShmPTR->cqueue_arr == (struct Photocopy *)(-1)){
+		printf("\n shmat() for ShmID2 Failed\n");
+		exit(1);
+	}
+	printf("Photocopy Centre's SHMID is %d \n",ShmID);
+	printf("Photocopy Centre's Queue's SHMID is %d \n",ShmID2);
 
 	runtime = atoi(argv[2]);
 	start = time(NULL);
