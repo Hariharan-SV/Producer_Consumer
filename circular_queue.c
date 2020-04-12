@@ -1,68 +1,58 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "photocopy.h"
+#include <string.h>
+#include "circular_queue.h"
 
-int MAX;
-int front = -1;
-int rear = -1;
-
-struct Photocopy *cqueue_arr;
-
-struct Photocopy* initialize(int x){
-	MAX=x;
-	cqueue_arr = (struct Photocopy *)malloc(MAX*sizeof(struct Photocopy ));
-	return cqueue_arr;
-}
-
-int insert(int item)
+int insert(int filesize,int copies,char filename[20],struct Circular_Queue *CQ)
 {
-	if((front == 0 && rear == MAX-1) || (front == rear+1)){
+	if((CQ->front == 0 && CQ->rear == CQ->MAX-1) || (CQ->front == CQ->rear+1)){
 		return 1;
 	}
-	if(front == -1){
-		front = 0;
-		rear = 0;
+	if(CQ->front == -1){
+		CQ->front = 0;
+		CQ->rear = 0;
 	}
 	else
 	{
-		if(rear == MAX-1)
-			rear = 0;
+		if(CQ->rear == CQ->MAX-1)
+			CQ->rear = 0;
 		else
-			rear = rear+1;
+			CQ->rear = CQ->rear+1;
 	}
-	cqueue_arr[rear].copies = item ;
-	printf("%d %d\n",cqueue_arr[rear].copies,rear);
+	CQ->cqueue_arr[CQ->rear].copies = copies ;
+	CQ->cqueue_arr[CQ->rear].filesize = filesize;
+	strcpy(CQ->cqueue_arr[CQ->rear].filename,filename);
+	printf("%s %d\n",CQ->cqueue_arr[CQ->rear].filename,CQ->rear);
 	return 0;
 }
 
-int deletion()
+int deletion(struct Circular_Queue *CQ)
 {
-	if(front == -1)
+	if(CQ->front == -1)
 	{
-		printf("Queue Underflown");
 		return 1;
 	}
-	printf("Element deleted from queue is : %d\n",cqueue_arr[front].copies);
-	if(front == rear)
+	printf("Element deleted from queue is : %s\n",CQ->cqueue_arr[CQ->front].filename);
+	if(CQ->front == CQ->rear)
 	{
-		front = -1;
-		rear=-1;
+		CQ->front = -1;
+		CQ->rear=-1;
 	}
 	else
 	{
-		if(front == MAX-1)
-			front = 0;
+		if(CQ->front == CQ->MAX-1)
+			CQ->front = 0;
 		else
-			front = front+1;
+			CQ->front = CQ->front+1;
 	}
 	return 0;
 }
 
-void display()
+void display(struct Circular_Queue *CQ)
 {
-	int front_pos = front,rear_pos = rear;
+	int front_pos = CQ->front,rear_pos = CQ->rear;
 
-	if(front == -1)
+	if(CQ->front == -1)
 	{
 		printf("Queue is empty\n");
 		return;
@@ -71,18 +61,18 @@ void display()
 	if( front_pos <= rear_pos )
 		while(front_pos <= rear_pos)
 		{
-			printf("%d %d\n",front_pos,cqueue_arr[front_pos].copies);
+			printf("%d %s\n",front_pos,CQ->cqueue_arr[front_pos].filename);
 			front_pos++;
 		}
 	else
 	{
-		while(front_pos <= MAX-1){
-			printf("%d %d\n",front_pos,cqueue_arr[front_pos].copies);
+		while(front_pos <= CQ->MAX-1){
+			printf("%d %s\n",front_pos,CQ->cqueue_arr[front_pos].filename);
 			front_pos++;
 		}
 		front_pos = 0;
 		while(front_pos <= rear_pos){
-			printf("%d %d\n",front_pos,cqueue_arr[front_pos].copies);
+			printf("%d %s\n",front_pos,CQ->cqueue_arr[front_pos].filename);
 			front_pos++;
 		}
 	}
