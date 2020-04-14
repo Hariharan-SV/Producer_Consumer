@@ -23,8 +23,10 @@ int main(int argc,char* argv[]){
 	ShmID2 = atoi(argv[4]);
     pages = atoi(argv[6]);
 	copies = atoi(argv[8]);
+    strcat(argv[10],"\0");
     strcpy(filename,argv[10]);
 
+    printf("%d\n",strlen(filename));
 
 	ShmPTR = (struct Circular_Queue *)shmat(ShmID,NULL,0);
 	if((int)ShmPTR == -1){
@@ -37,8 +39,13 @@ int main(int argc,char* argv[]){
 		printf("\n shmat() for ShmID2 Failed\n");
 		exit(1);
 	}
-
-	insert(pages,copies,filename,ShmPTR);
-
+    while (ShmPTR->lock == 1);      
+    ShmPTR->lock = 1;
+    displayall(ShmPTR);
+	int task = insert(pages,copies,filename,ShmPTR);
+    displayall(ShmPTR);
+    ShmPTR->lock = 0;
+    if(task == -1)
+        printf("\nBuffer is FULL\n");
     shmdt((void*)ShmPTR);
 }

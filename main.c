@@ -21,12 +21,12 @@ int main(int argc,char *argv[]) {
 	int	ShmID,ShmID2;
 	struct Circular_Queue *ShmPTR;
 			
-	ShmKEY = rand()%1000+1500;
-	ShmKEY2 = rand()%1000+ 2000;
+	ShmKEY = rand()%1000 + 100;
+	ShmKEY2 = ShmKEY+ 2000;
     
 	ShmID = shmget(ShmKEY,sizeof(struct Circular_Queue),IPC_CREAT| 0777);
 	if(ShmID<0){
-		printf("\n shmget() Failed\n");
+		printf("\n shmget(%d) Failed\n",ShmKEY);
 		exit(1);
 	}
 
@@ -40,7 +40,9 @@ int main(int argc,char *argv[]) {
 	ShmPTR->MAX = atoi(argv[6]);
 	ShmPTR->front = -1;
 	ShmPTR->rear = -1;
-	ShmID2=shmget(ShmKEY2,(ShmPTR->MAX*sizeof(struct Photocopy)),0666|IPC_CREAT);
+	ShmPTR->status = 1;
+	ShmPTR->lock = 0;
+	ShmID2=shmget(ShmKEY2,(ShmPTR->MAX*sizeof(struct Photocopy)),IPC_CREAT|0777);
 	if(ShmID2<0){
 		printf("\n shmget() for ShmKEY2 Failed\n");
 		exit(1);
@@ -65,6 +67,8 @@ int main(int argc,char *argv[]) {
 		else
 			sleep(1);
 	}
+	ShmPTR->status =0;
+
 	shmdt((void*)ShmPTR);
 	shmctl(ShmID,IPC_RMID,NULL);	
 	printf("Shutting the centre without abnormal termination..\n");

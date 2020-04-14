@@ -10,16 +10,18 @@
 
 int main(int argc,char *argv[]) {
 
-	if(argc!=5){
-        printf("\nIncorrect args\nCorrect usage is %s -s <store's_shmid> -q <queue's_shmid>",argv[0]);
+	if(argc!=9){
+        printf("\nIncorrect args\nCorrect usage is %s -s <store's_shmid> -q <queue's_shmid> -t <max_sleep_time> -w <max_work_time>",argv[0]);
         return 1;
     }
 
-	int	ShmID,ShmID2;
+	int	ShmID,ShmID2,sleeptime,worktime,printer_no;
 	struct Circular_Queue *ShmPTR;
 
 	ShmID = atoi(argv[2]);
 	ShmID2 = atoi(argv[4]);
+	sleeptime = atoi(argv[6]);
+	worktime = atoi(argv[8]);
 
 	ShmPTR = (struct Circular_Queue *)shmat(ShmID,NULL,0);
 	if((int)ShmPTR == -1){
@@ -33,8 +35,46 @@ int main(int argc,char *argv[]) {
 		exit(1);
 	}
 
-	display(ShmPTR);
+	printer_no = 1;
 
+	printf("\nSuccess!!");
+	int check=0;
+
+	while (ShmPTR->status == 1)
+	{
+		while (ShmPTR->lock == 1){
+			printf("\nSleeping...");
+			sleep(3);
+		}
+		
+		ShmPTR->lock = 1;
+		int x = isEmpty(ShmPTR);
+		ShmPTR->lock = 0;
+		if(x == -1){
+			printf("\nNo Requests in queue");
+			printf("\nPrinter %d goes to sleep for %d secs.\n",printer_no,sleeptime);
+			sleep(sleeptime);
+		}else if (check == 1){
+			printf("Front : %d\n",ShmPTR->cqueue_arr[0]);
+			displayall(ShmPTR);
+			struct Photocopy *Front = getFront(ShmPTR);
+			if(Front->filesize*Front->copies > worktime){
+				Front->filesize=Front->filesize*Front->copies - worktime;
+				Front->copies=1;
+				printf("\nPrinter %d goes works for %d secs.\n",printer_no,worktime);
+				sleep(worktime);
+			}else{
+				printf("\nPrinter %d works for %d secs.\n",printer_no, Front->filesize*Front->copies);
+				sleep( Front->filesize*Front->copies);
+				deletion(ShmPTR);
+			}
+			check = 0;
+		}else{
+			check = 1;
+		}
+		printer_no = (printer_no + 1) % ShmPTR->no_of_devices;
+	}
+	
     shmdt((void*)ShmPTR);
 
 }
