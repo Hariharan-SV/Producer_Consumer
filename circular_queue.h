@@ -5,5 +5,7 @@ struct Circular_Queue{
     int front;
     int rear;
     int no_of_devices;
+    int status;
+    int lock;
     struct Photocopy *cqueue_arr;
 };
