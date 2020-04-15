@@ -27,7 +27,7 @@ int insert(int filesize,int copies,char filename[20],struct Circular_Queue *CQ)
 
 struct Photocopy* getFront(struct Circular_Queue *CQ)
 {
-	printf("\n%d %d %s\n",CQ->cqueue_arr[CQ->front].copies,CQ->cqueue_arr[CQ->front].filesize,CQ->cqueue_arr[CQ->front].filename);
+	printf("\n%d copies of %d pages of File : %s\n",CQ->cqueue_arr[CQ->front].copies,CQ->cqueue_arr[CQ->front].filesize,CQ->cqueue_arr[CQ->front].filename);
 	return &(CQ->cqueue_arr[CQ->front]);
 };
 
@@ -37,7 +37,7 @@ int deletion(struct Circular_Queue *CQ)
 	if(CQ->front == -1){
 		return -1;
 	}
-	printf("Element deleted from queue is : %s\n",CQ->cqueue_arr[CQ->front].filename);
+	printf("Photocopy is taken so file : %s is removed from queue\n",CQ->cqueue_arr[CQ->front].filename);
 	if(CQ->front == CQ->rear){
 		CQ->front = -1;
 		CQ->rear=-1;
@@ -55,7 +55,6 @@ int isEmpty(struct Circular_Queue *CQ){
 	if(CQ->front == -1){
 		return -1;
 	}else{
-		printf("\nSize :- %d\n",(CQ->rear - CQ->front + 1)%(CQ->MAX));
 		return 0;
 	}
 }
@@ -72,19 +71,18 @@ int displayall(struct Circular_Queue *CQ)
 	if( front_pos <= rear_pos )
 		while(front_pos <= rear_pos)
 		{
-			printf("%d %d\n",front_pos,rear_pos);
-			printf("%d %d\n",front_pos,CQ->cqueue_arr[front_pos].filesize);
+			printf("Queue[%d]:-\nCopies:%d\tPages:%d\tFilename:%s\n",front_pos,CQ->cqueue_arr[front_pos].copies,CQ->cqueue_arr[front_pos].filesize,CQ->cqueue_arr[front_pos].filename);
 			front_pos++;
 		}
 	else
 	{
 		while(front_pos <= CQ->MAX-1){
-			printf("%d %d\n",front_pos,CQ->cqueue_arr[front_pos].filesize);
+			printf("Queue[%d]:-\nCopies:%d\tPages:%d\tFilename:%s\n",front_pos,CQ->cqueue_arr[front_pos].copies,CQ->cqueue_arr[front_pos].filesize,CQ->cqueue_arr[front_pos].filename);
 			front_pos++;
 		}
 		front_pos = 0;
 		while(front_pos <= rear_pos){
-			printf("%d %s\n",front_pos,CQ->cqueue_arr[front_pos].filename);
+			printf("Queue[%d]:-\nCopies:%d\tPages:%d\tFilename:%s\n",front_pos,CQ->cqueue_arr[front_pos].copies,CQ->cqueue_arr[front_pos].filesize,CQ->cqueue_arr[front_pos].filename);
 			front_pos++;
 		}
 	}
