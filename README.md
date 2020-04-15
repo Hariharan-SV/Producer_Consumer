@@ -6,14 +6,14 @@ Here a circular queue is stored inside the shared memory
 These programs will be working with shared memory
 
 The repo has three main files
-..*main.c     - creates shared memory
-..*client.c   - inserts data into shared memory
-..*devices.c  - views and deletes data from shared memory
+*main.c     - creates shared memory
+*client.c   - inserts data into shared memory
+*devices.c  - views and deletes data from shared memory
 
 and three additional files which provides support to above main files
-..*circular_queue.c   - has functions to work with Circular Queue
-..*circular_queue.h   - has Circular queue's structure
-..*photocopy.h        - has Photocopy's structure
+*circular_queue.c   - has functions to work with Circular Queue
+*circular_queue.h   - has Circular queue's structure
+*photocopy.h        - has Photocopy's structure
 
 ## Working
  The Circular queue structure has an array of Photocopy structure.
