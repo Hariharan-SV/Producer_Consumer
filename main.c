@@ -20,10 +20,10 @@ int main(int argc,char *argv[]) {
 	key_t	ShmKEY,ShmKEY2;
 	int	ShmID,ShmID2;
 	struct Circular_Queue *ShmPTR;
-			
-	ShmKEY = rand()%1000 + 100;
-	ShmKEY2 = ShmKEY+ 2000;
-    
+
+	ShmKEY = rand()%1000;
+	ShmKEY2 = ShmKEY+ 2;
+
 	ShmID = shmget(ShmKEY,sizeof(struct Circular_Queue),IPC_CREAT| 0777);
 	if(ShmID<0){
 		printf("\n shmget(%d) Failed\n",ShmKEY);
@@ -52,8 +52,8 @@ int main(int argc,char *argv[]) {
 		printf("\n shmat() for ShmID2 Failed\n");
 		exit(1);
 	}
-	printf("Photocopy Centre's SHMID is %d \n",ShmID);
-	printf("Photocopy Centre's Queue's SHMID is %d \n",ShmID2);
+	printf("Photocopy Centre's SHMID is %d \n",ShmKEY);
+	printf("Photocopy Centre's Queue's SHMID is %d \n",ShmKEY2);
 
 	runtime = atoi(argv[2]);
 	start = time(NULL);
