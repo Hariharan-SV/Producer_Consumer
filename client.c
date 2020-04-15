@@ -22,8 +22,8 @@ int main(int argc,char* argv[]){
 
 	ShmKEY = atoi(argv[2]);
 	ShmKEY2 = atoi(argv[4]);
-	pages = atoi(argv[6]);
-	copies = atoi(argv[8]);
+    copies = atoi(argv[6]);
+	pages = atoi(argv[8]);
 	strcat(argv[10],"\0");
 	strcpy(filename,argv[10]);
 
