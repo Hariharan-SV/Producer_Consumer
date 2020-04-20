@@ -118,6 +118,7 @@ int main(int argc,char *argv[]) {
 		printer_no = (printer_no + 1) % ShmPTR->no_of_devices; // swirching onto next printer
 	}
 	
+    close(file_descriptor);
     shmdt((void*)ShmPTR);
 
 }
