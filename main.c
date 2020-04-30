@@ -68,3 +68,16 @@ int main(int argc,char *argv[]) {
 		end = time(NULL);
 		elapsed = difftime(end, start);
 
+		if (elapsed >= (double)runtime)
+			terminate = 0;
+		else
+			sleep(1);
+	}
+	ShmPTR->status =0;
+
+	shmdt((void*)ShmPTR);
+	shmctl(ShmID,IPC_RMID,NULL);	
+	printf("Shutting the centre without abnormal termination..\n");
+
+	return 0;
+ }
