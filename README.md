@@ -36,4 +36,6 @@ and three additional files which provides support to above main files
  To insert data into the queue.
  ##### `./client -s <store's_key> -q <queue's_key> -n <no_of_copies> -p <no_of_pages> -f <file_name> `
  
- Happy coding!
+## Problem in the code
+
+The code has a rare type of bug known as Heisenbug. The program seems to work perfect when debugger is turned on and crashes when it is turned off ( for more details about Heisenbug click [here](https://en.wikipedia.org/wiki/Heisenbug) )
